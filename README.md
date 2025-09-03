@@ -45,7 +45,7 @@ Clone the repository and install dependencies:
 git clone https://github.com/<your-username>/radioactive-decay.git
 cd radioactive-decay
 pip install -r requirements.txt
-![Counts vs time](docs/counts_I1.png)
-![Activity of mixture](docs/activity_mixture.png)
+![Counts vs time — Tc99m](docs/counts_Tc99m.png)
+![Log counts — Tc99m](docs/log_counts_Tc99m.png)
 
 
