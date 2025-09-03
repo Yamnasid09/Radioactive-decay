@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: Radioactive Decay Simulator
+authors:
+  - family-names: Siddiqui
+    given-names: Yamna
+repository-code: https://github.com/Yamnasid09/Radioactive-decay
+version: v1.0.0
+date-released: 2025-09-03
+preferred-citation:
+  type: software
+  title: Radioactive Decay Simulator
+  authors:
+    - family-names: Siddiqui
+      given-names: Yamna
+  year: 2025
+  notes: v1.0.0
