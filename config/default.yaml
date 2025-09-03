@@ -1,0 +1,27 @@
+# Global settings
+run_name: "baseline"
+random_seed: 42
+output_dir: "data"
+
+# Time grid (seconds)
+dt: 0.1
+T: 50.0
+
+# Isotopes: each entry has name, half_life (s) or lambda, and initial count N0
+isotopes:
+  - name: I1
+    half_life: 10.0
+    N0: 20000
+  - name: I2
+    half_life: 5.0
+    N0: 10000
+
+# Monte Carlo options
+monte_carlo:
+  n_realizations: 20
+  engine: "binomial"   # binomial or per_nucleus
+
+# Plot options
+plots:
+  show: false
+  save: true
