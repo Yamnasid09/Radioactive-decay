@@ -1,7 +1,9 @@
 # Radioactive Decay Simulation
 
-A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.  
-Includes both **analytical exponential decay** and a **stochastic Monte Carlo model**, with support for multiple isotopes.
+# Radioactive Decay Simulation
+![CI Status](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/tests.yml/badge.svg)
+A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
+
 
 ---
 
