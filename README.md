@@ -37,6 +37,23 @@ p = 1 - e^{-\lambda \Delta t} \approx \lambda \Delta t
 - **Unit tests** with `pytest` for reliability
 
 ---
+## ⚡ Optimization
+
+- Default engine **binomial** sabse fast hai (vectorized RNG).
+- Optional: **Numba JIT** per-nucleus engine available (`engine: "numba"`). Yeh teaching/benchmark ke liye hai; large `N0` ya bohot zyada realizations par slow ho sakta hai.
+
+**Numba demo (chhota run recommend):**
+```yaml
+# config/default.yaml (temporary demo)
+isotopes:
+  - name: Tc99m
+    half_life: 21636
+    N0: 5000   # chhota N0 for demo
+monte_carlo:
+  n_realizations: 20
+  engine: "numba"
+dt: 60
+T: 3600
 
 ## ⚙️ Installation
 Clone the repository and install dependencies:
