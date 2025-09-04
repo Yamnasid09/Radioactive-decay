@@ -25,6 +25,7 @@ def ensure_dir(p: Path):
 
 def cmd_run(args):
     cfg = load_config(args.config)
+print(f"[info] Loaded config: {args.config}")
 
     # Detector configuration (optional)
     det_cfg = (cfg.get("detector", {}) or {})
@@ -49,6 +50,8 @@ def cmd_run(args):
         )
         for d in cfg["isotopes"]
     ]
+iso_names = [iso.name for iso in isotopes]
+print(f"[info] Simulating isotopes: {', '.join(iso_names)}")
 
     run_id = time.strftime("%Y%m%d-%H%M%S")
     rn = cfg.get("run_name", "").strip()
