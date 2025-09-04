@@ -2,6 +2,9 @@
 
 ![CI Status](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/tests.yml/badge.svg)
 A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
+**Motivation:** I wanted a tiny simulator to verify the exponential decay law and practice basic software practices for the exam.
+
+**Scope:** This is a small teaching project, not a full package.
 
 
 ---
