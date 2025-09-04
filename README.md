@@ -34,6 +34,8 @@ p = 1 - e^{-\lambda \Delta t} \approx \lambda \Delta t
 - **Command-line interface (CLI)** for easy runs
 - **Results saved** as CSV + plots (PNG)
 - **Unit tests** with `pytest` for reliability
+- Default engine is **binomial** (simple and fast).
+- **Numba** JIT is optional and used only for small demos.
 
 ---
 ## ⚡ Optimization
