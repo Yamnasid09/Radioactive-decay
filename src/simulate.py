@@ -1,6 +1,7 @@
 import numpy as np
 from dataclasses import dataclass
 from .decay import Isotope
+# Monte Carlo engines for radioactive decay (binomial default; optional Numba)
 
 # --- Optional: Numba JIT for speed (fallback-safe) ---
 try:

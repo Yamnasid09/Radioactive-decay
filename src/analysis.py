@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+# Helper functions for averages, confidence intervals, and lambda fit
 
 def mean_and_ci(traj, alpha=0.05):
     """

@@ -1,4 +1,5 @@
 import numpy as np
+# Simple analytical model for radioactive decay (course project)
 
 class Isotope:
     def __init__(self, name: str, N0: int, half_life: float = None, lam: float = None):
