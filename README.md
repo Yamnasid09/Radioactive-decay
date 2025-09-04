@@ -1,6 +1,5 @@
 # Radioactive Decay Simulation
 
-# Radioactive Decay Simulation
 ![CI Status](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/tests.yml/badge.svg)
 A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
 
@@ -39,16 +38,17 @@ p = 1 - e^{-\lambda \Delta t} \approx \lambda \Delta t
 ---
 ## ⚡ Optimization
 
-- Default engine **binomial** sabse fast hai (vectorized RNG).
-- Optional: **Numba JIT** per-nucleus engine available (`engine: "numba"`). Yeh teaching/benchmark ke liye hai; large `N0` ya bohot zyada realizations par slow ho sakta hai.
+- The default engine is binomial, which is the fastest (vectorized RNG).
 
-**Numba demo (chhota run recommend):**
+Optional: a Numba JIT per-nucleus engine is available (engine: "numba"). This is mainly for teaching/benchmarking; it can be slow for large N0 or very many realizations.
+
+**Numba demo:**
 ```yaml
 # config/default.yaml (temporary demo)
 isotopes:
   - name: Tc99m
     half_life: 21636
-    N0: 5000   # chhota N0 for demo
+    N0: 5000   
 monte_carlo:
   n_realizations: 20
   engine: "numba"
