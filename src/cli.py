@@ -1,4 +1,4 @@
-# src/cli.py  — minimal, indentation-safe CLI
+# src/cli.py — clean indentation + analyze support
 
 import argparse
 import math
@@ -16,7 +16,6 @@ UNIT_SEC = {"s": 1, "min": 60, "h": 3600, "d": 86400, "y": 365.25 * 86400}
 
 
 def _lambda_in_unit_from_half_life(half_life_value: float, half_life_unit: str, out_unit: str) -> float:
-    """Convert half-life (value, unit) to lambda in 1/out_unit."""
     seconds = half_life_value * UNIT_SEC[half_life_unit]
     lam_per_sec = math.log(2) / seconds
     return lam_per_sec * UNIT_SEC[out_unit]
@@ -44,6 +43,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Run radioactive-decay simulations and plots")
     sub = p.add_subparsers(dest="cmd", required=True)
 
+    # simulate
     ps = sub.add_parser("simulate", help="Run a simulation")
     ps.add_argument("--mode", choices=["deterministic", "mc", "gillespie", "chain"], default="mc")
     ps.add_argument("--isotope", choices=sorted(PRESETS.keys()))
@@ -56,8 +56,15 @@ def main() -> None:
     ps.add_argument("--seed", type=int)
     ps.add_argument("--plot", action="store_true")
 
+    # plot
     pp = sub.add_parser("plot", help="Plot a saved run")
     pp.add_argument("--run-dir", default="data/runs/last")
+    pp.add_argument("--out", default="images")
+
+    # analyze
+    pa = sub.add_parser("analyze", help="Estimate λ and half-life")
+    pa.add_argument("--run-dir", default="data/runs/last")
+    pa.add_argument("--out", default="images")
 
     args = p.parse_args()
 
@@ -75,16 +82,17 @@ def main() -> None:
             cmd += ["--seed", str(args.seed)]
         _run(cmd)
         if args.plot:
-            _run([sys.executable, "-m", "src.plotting", "--run-dir", "data/runs/last"])
+            _run([sys.executable, "-m", "src.plotting", "--run-dir", "data/runs/last", "--out", "images"])
         return
 
     if args.cmd == "plot":
-        _run([sys.executable, "-m", "src.plotting", "--run-dir", args.run_dir])
+        _run([sys.executable, "-m", "src.plotting", "--run-dir", args.run_dir, "--out", args.out])
+        return
+
+    if args.cmd == "analyze":
+        _run([sys.executable, "-m", "src.analyze", "--run-dir", args.run_dir, "--out", args.out])
         return
 
 
 if __name__ == "__main__":
     main()
-
-
-
