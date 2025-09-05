@@ -2,12 +2,11 @@
 
 ![CI Status](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/tests.yml/badge.svg)
 A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
+
 **Motivation:** I wanted a tiny simulator to verify the exponential decay law and practice basic software practices for the exam.
 
 **Scope:** This is a small teaching project, not a full package.
 
-
----
 
 ## 🔬 Physics Background
 For a species with decay constant λ and half-life:
@@ -29,6 +28,66 @@ p = 1 - e^{-\lambda \Delta t} \approx \lambda \Delta t
 \]
 
 ---
+## CLI Quickstart (no YAML needed)
+
+**Show help**
+```bash
+python -m src.cli -h
+python -m src.cli simulate -h
+python -m src.cli plot -h
+
+**Common isotopes (half-life presets)**
+- `tc99m` = 6.01 h
+- `i131`  = 8.02 d
+- `cs137` = 30.05 y
+- `co60`  = 5.27 y
+
+> Tip: choose time unit via `--half-life-unit {s|min|h|d|y}` and keep `dt`/`tmax` in the same unit.
+
+**Examples**
+```bash
+# Monte-Carlo with lambda directly
+python -m src.cli simulate --mode mc --lambda 0.2 --n0 2000 --tmax 5 --dt 0.1 --seed 1 --plot
+
+# Deterministic using Tc-99m preset (hours)
+python -m src.cli simulate --mode deterministic --isotope tc99m --half-life-unit h \
+  --n0 20000 --tmax 24 --dt 0.1 --plot
+
+# Monte-Carlo using I-131 (days)
+python -m src.cli simulate --mode mc --isotope i131 --half-life-unit d \
+  --n0 50000 --tmax 40 --dt 0.1 --seed 7 --plot
+
+## Outputs
+
+- **Data (latest run):** saved under `data/runs/<timestamp>/` and symlinked at `data/runs/last`.  
+  Files: `t.npy`, `N.npy` (or `traj.npy`), `meta.json`, plus CSV copies.
+
+- **Plots:**
+  - By default, the plotting script saves to `images/`.
+  - If you used a different saver that wrote to `docs/`, you may already see figures there (e.g., `docs/*.png`).
+
+**Regenerate plots from the latest run (into `images/`):**
+```bash
+python -m src.plotting --run-dir data/runs/last --out images
+
+
+```bash
+python -m src.plotting --run-dir data/runs/last --out images
+
+### Background noise (Poisson)
+
+Add Poisson background counts per time-bin on an existing run:
+
+```bash
+python src/plot_with_bg.py --run-dir data/runs/last --bg-rate 0.5 --seed 7 --out images
+
+## Half-life & λ estimation (CLI)
+
+Estimate decay constant and half-life from the latest run and save a fitted log plot:
+
+```bash
+python -m src.analyze --run-dir data/runs/last --out images
+
 
 ## 🚀 Features
 - **Two engines**: analytical model and Monte Carlo
@@ -41,6 +100,24 @@ p = 1 - e^{-\lambda \Delta t} \approx \lambda \Delta t
 - **Numba** JIT is optional and used only for small demos.
 
 ---
+## Project Structure
+
+├─ src/
+│ ├─ decay.py # Core physics: deterministic, MC helpers, (optional) numba single-step
+│ ├─ simulate.py # Runs a simulation based on flags/config; saves data/runs/*
+│ ├─ plotting.py # Makes plots from a saved run (→ images/ by default)
+│ ├─ plot_with_bg.py # Adds Poisson background to a saved run and plots
+│ └─ cli.py # CLI wrapper: presets (Tc-99m, I-131, …), half-life/λ/N0 flags
+├─ config/
+│ └─ default.yaml # (optional) example config; CLI can skip this
+├─ data/
+│ └─ runs/
+│ └─ last → run_YYYYmmdd-HHMMSS/ # symlink to latest run
+├─ images/ # Exported figures (nt_curve.png, log_nt.png, bg.png)
+├─ docs/ # (optional) extra figures (counts.png)
+├─ README.md
+├─ requirements.txt
+└─ tests/ # (optional) unit tests
 ## ⚡ Optimization
 
 - The default engine is binomial, which is the fastest (vectorized RNG).
@@ -72,8 +149,6 @@ pip install -r requirements.txt
 
 ## 🔁 Reproducibility
 
-Is repo ki figures ko bilkul waise hi dobara banane ke liye:
-
 ```bash
 # env install
 pip install -r requirements.txt
@@ -81,7 +156,7 @@ pip install -r requirements.txt
 # run simulation (Tc99m, 24h window, 300 realizations)
 python -m src.cli run --config config/default.yaml
 
-# outputs yahan milenge (naya timestamp):
+# outputs:
 data/<run_id>/
 
 # important files:

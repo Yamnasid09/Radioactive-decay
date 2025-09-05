@@ -1,171 +1,90 @@
+# src/cli.py  — minimal, indentation-safe CLI
+
 import argparse
-import json
-import time
-from pathlib import Path
-import yaml
-import numpy as np
-import pandas as pd
+import math
+import subprocess
+import sys
 
-from .decay import Isotope, mixture_counts_analytical
-from .simulate import SimConfig, simulate_isotope
-from .analysis import mean_and_ci, fit_lambda_from_counts
-from .plotting import plot_counts, plot_log_counts, plot_activity, plot_measured_counts
+PRESETS = {
+    "tc99m": ("h", 6.01),
+    "i131":  ("d", 8.02),
+    "cs137": ("y", 30.05),
+    "co60":  ("y", 5.27),
+}
 
-# Command-line tool to run simulations and save outputs
-
-
-def load_config(path):
-    with open(path, "r") as f:
-        return yaml.safe_load(f)
+UNIT_SEC = {"s": 1, "min": 60, "h": 3600, "d": 86400, "y": 365.25 * 86400}
 
 
-def ensure_dir(p: Path):
-    p.mkdir(parents=True, exist_ok=True)
+def _lambda_in_unit_from_half_life(half_life_value: float, half_life_unit: str, out_unit: str) -> float:
+    """Convert half-life (value, unit) to lambda in 1/out_unit."""
+    seconds = half_life_value * UNIT_SEC[half_life_unit]
+    lam_per_sec = math.log(2) / seconds
+    return lam_per_sec * UNIT_SEC[out_unit]
 
 
-def cmd_run(args):
-    cfg = load_config(args.config)
-print(f"[info] Loaded config: {args.config}")
+def _resolve_lambda(args) -> float:
+    # priority: --lambda > --half-life > --isotope
+    if args.lambda_ is not None:
+        return float(args.lambda_)
+    if args.half_life is not None:
+        return _lambda_in_unit_from_half_life(args.half_life, args.half_life_unit, args.half_life_unit)
+    if args.isotope:
+        preset_unit, preset_hl = PRESETS[args.isotope]
+        out_unit = args.half_life_unit or preset_unit
+        return _lambda_in_unit_from_half_life(preset_hl, preset_unit, out_unit)
+    raise SystemExit("Provide --lambda OR --half-life (+ unit) OR --isotope")
 
-    # Detector configuration (optional)
-    det_cfg = (cfg.get("detector", {}) or {})
-    eff = float(det_cfg.get("efficiency", 1.0))
-    noise = str(det_cfg.get("noise", "none")).lower()
 
-    rng = np.random.default_rng(cfg.get("random_seed", 0))
-    dt, T = float(cfg["dt"]), float(cfg["T"])
-    simcfg = SimConfig(
-        dt=dt,
-        T=T,
-        n_realizations=int(cfg["monte_carlo"]["n_realizations"]),
-        engine=str(cfg["monte_carlo"].get("engine", "binomial")),
-    )
+def _run(cmd: list[str]) -> None:
+    print("[cmd]", " ".join(cmd))
+    subprocess.check_call(cmd)
 
-    isotopes = [
-        Isotope(
-            d["name"],
-            int(d["N0"]),
-            half_life=d.get("half_life"),
-            lam=d.get("lambda"),
-        )
-        for d in cfg["isotopes"]
-    ]
-iso_names = [iso.name for iso in isotopes]
-print(f"[info] Simulating isotopes: {', '.join(iso_names)}")
 
-    run_id = time.strftime("%Y%m%d-%H%M%S")
-    rn = cfg.get("run_name", "").strip()
-    if rn:
-        run_id = f"{run_id}-{rn}"
+def main() -> None:
+    p = argparse.ArgumentParser(description="Run radioactive-decay simulations and plots")
+    sub = p.add_subparsers(dest="cmd", required=True)
 
-    outdir = Path(cfg.get("output_dir", "data")) / run_id
-    ensure_dir(outdir)
+    ps = sub.add_parser("simulate", help="Run a simulation")
+    ps.add_argument("--mode", choices=["deterministic", "mc", "gillespie", "chain"], default="mc")
+    ps.add_argument("--isotope", choices=sorted(PRESETS.keys()))
+    ps.add_argument("--half-life", type=float, dest="half_life")
+    ps.add_argument("--half-life-unit", choices=list(UNIT_SEC.keys()), default="h")
+    ps.add_argument("--lambda", type=float, dest="lambda_")
+    ps.add_argument("--n0", type=int, default=10000)
+    ps.add_argument("--tmax", type=float, default=10.0)
+    ps.add_argument("--dt", type=float, default=0.05)
+    ps.add_argument("--seed", type=int)
+    ps.add_argument("--plot", action="store_true")
 
-    # Save run metadata
-    with open(outdir / "meta.json", "w") as f:
-        json.dump({"config": cfg, "run_id": run_id}, f, indent=2)
+    pp = sub.add_parser("plot", help="Plot a saved run")
+    pp.add_argument("--run-dir", default="data/runs/last")
 
-    records = []
-    for iso in isotopes:
-        # ---- Simulation
-        t, traj = simulate_isotope(iso, simcfg, rng)
-        meanN, ci = mean_and_ci(traj)
-        lam_hat, N0_hat, r2 = fit_lambda_from_counts(t, meanN)
+    args = p.parse_args()
 
-        # ---- Save counts CSV
-        pd.DataFrame({"t": t, "N_mean": meanN, "N_ci": ci}).to_csv(
-            outdir / f"counts_{iso.name}.csv", index=False
-        )
+    if args.cmd == "simulate":
+        lam = _resolve_lambda(args)
+        cmd = [
+            sys.executable, "-m", "src.simulate",
+            "--mode", args.mode,
+            "--n0", str(args.n0),
+            "--lambda", str(lam),
+            "--tmax", str(args.tmax),
+            "--dt", str(args.dt),
+        ]
+        if args.seed is not None:
+            cmd += ["--seed", str(args.seed)]
+        _run(cmd)
+        if args.plot:
+            _run([sys.executable, "-m", "src.plotting", "--run-dir", "data/runs/last"])
+        return
 
-        # ---- Plots
-        plot_counts(
-            t,
-            meanN,
-            ci,
-            label=f"{iso.name}",
-            path=outdir / f"counts_{iso.name}.png",
-            show=bool(cfg["plots"]["show"]),
-        )
-        plot_log_counts(
-            t,
-            meanN,
-            label=f"{iso.name}",
-            path=outdir / f"log_counts_{iso.name}.png",
-            show=bool(cfg["plots"]["show"]),
-        )
+    if args.cmd == "plot":
+        _run([sys.executable, "-m", "src.plotting", "--run-dir", args.run_dir])
+        return
 
-        # ---- Optional detector measurement (per time bin)
-        if eff < 1.0 or noise != "none":
-            # Expected decays between bins from the mean trajectory
-            decays = np.maximum(meanN[:-1] - meanN[1:], 0.0)
-            expected_detected = eff * decays
 
-            if noise == "poisson":
-                measured = rng.poisson(expected_detected)
-            else:
-                measured = expected_detected  # noiseless
+if __name__ == "__main__":
+    main()
 
-            # Save per-bin measured counts (aligned with t[1:])
-            pd.DataFrame({"t": t[1:], "measured_counts": measured}).to_csv(
-                outdir / f"measured_counts_{iso.name}.csv", index=False
-            )
-            plot_measured_counts(
-                t[1:],
-                measured,
-                label=f"{iso.name}",
-                path=outdir / f"measured_counts_{iso.name}.png",
-                show=bool(cfg["plots"]["show"]),
-            )
-
-        # ---- Fit report
-        with open(outdir / f"fit_{iso.name}.txt", "w") as f:
-            f.write(f"lambda_hat={lam_hat:.6f}\n")
-            f.write(f"T12_hat={np.log(2) / lam_hat:.6f}\n")
-            f.write(f"N0_hat={N0_hat:.1f}\n")
-            f.write(f"R2={r2:.5f}\n")
-
-        records.append(
-            {
-                "isotope": iso.name,
-                "lam_true": iso.lam,
-                "lam_hat": lam_hat,
-                "T12_true": iso.half_life,
-                "T12_hat": np.log(2) / lam_hat,
-                "R2": r2,
-            }
-        )
-
-    # ---- Analytical mixture (no MC)
-    N_mix, A_mix = [], []
-    for tt in t:
-        N, A = mixture_counts_analytical(isotopes, tt)
-        N_mix.append(N)
-        A_mix.append(A)
-
-    pd.DataFrame({"t": t, "N": N_mix, "A": A_mix}).to_csv(
-        outdir / "mixture_analytical.csv", index=False
-    )
-    plot_activity(
-        t,
-        np.array(A_mix),
-        label="mixture",
-        path=outdir / "activity_mixture.png",
-        show=bool(cfg["plots"]["show"]),
-    )
-
-    # ---- Summary CSV
-    pd.DataFrame.from_records(records).to_csv(outdir / "summary_fits.csv", index=False)
-
-    # ---- Update "latest" pointer
-    latest = Path(cfg.get("output_dir", "data")) / "latest"
-    try:
-        if latest.exists() or latest.is_symlink():
-            latest.unlink()
-        latest.symlink_to(outdir, target_is_directory=True)
-    except Exception:
-        with open(Path(cfg.get("output_dir", "data")) / "LATEST_PATH.txt", "w") as f:
-            f.write(str(outdir))
-
-    print(f"Run complete. Outputs in {outdir}")
 
 
