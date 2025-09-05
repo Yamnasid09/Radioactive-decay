@@ -1,5 +1,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17063668.svg)](https://doi.org/10.5281/zenodo.17063668)
 
+[![CI](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Yamnasid09/Radioactive-decay/actions) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17063668.svg)](https://doi.org/10.5281/zenodo.17063668) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Docs](https://img.shields.io/badge/docs-website-blue)](https://yamnasid09.github.io/Radioactive-decay/)
+
+
 ## Plots (preview)
 
 <p align="center">
