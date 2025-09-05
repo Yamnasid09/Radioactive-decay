@@ -1,3 +1,9 @@
+![CI](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/ci.yml/badge.svg?branch=main)
+
+
+
+
+
 # Radioactive Decay Simulation
 
 ![CI Status](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/tests.yml/badge.svg)
@@ -35,6 +41,13 @@ p = 1 - e^{-\lambda \Delta t} \approx \lambda \Delta t
 python -m src.cli -h
 python -m src.cli simulate -h
 python -m src.cli plot -h
+
+## Install & Run (CLI)
+
+Install the project as a CLI:
+
+```bash
+python -m pip install -e .
 
 ### Common isotopes (presets)
 
@@ -86,10 +99,10 @@ python -m src.cli analyze --run-dir data/runs/last --out images
   Files: `t.npy`, `N.npy` (or `traj.npy`), `meta.json`, plus CSV copies.
 
 - **Plots:**
-  - By default, the plotting script saves to `images/`.
+  - By default, the plotting script saves to `assets/`.
   - If you used a different saver that wrote to `docs/`, you may already see figures there (e.g., `docs/*.png`).
 
-**Regenerate plots from the latest run (into `images/`):**
+**Regenerate plots from the latest run (into `assets/`):**
 ```bash
 python -m src.plotting --run-dir data/runs/last --out images
 
@@ -113,14 +126,14 @@ python -m src.analyze --run-dir data/runs/last --out images
 ## Sample Plots
 
 <p align="center">
-  <img src="images/nt_curve.png" alt="N(t) curve" width="45%"/>
-  <img src="images/log_nt.png" alt="log N(t) fit" width="45%"/>
+  <img src="assets/nt_curve.png" alt="N(t) curve" width="45%"/>
+  <img src="assets/log_nt.png" alt="log N(t) fit" width="45%"/>
 </p>
 
 Optional (with background):
 <p align="center">
-  <img src="images/nt_curve_bg.png" alt="N(t) with background" width="45%"/>
-  <img src="images/log_nt_bg.png" alt="log N(t) with background" width="45%"/>
+  <img src="assets/nt_curve_bg.png" alt="N(t) with background" width="45%"/>
+  <img src="assets/log_nt_bg.png" alt="log N(t) with background" width="45%"/>
 </p>
 
 
@@ -140,7 +153,7 @@ Optional (with background):
 ├─ src/
 │ ├─ decay.py # Core physics: deterministic, MC helpers, (optional) numba single-step
 │ ├─ simulate.py # Runs a simulation based on flags/config; saves data/runs/*
-│ ├─ plotting.py # Makes plots from a saved run (→ images/ by default)
+│ ├─ plotting.py # Makes plots from a saved run (→ assets/ by default)
 │ ├─ plot_with_bg.py # Adds Poisson background to a saved run and plots
 │ └─ cli.py # CLI wrapper: presets (Tc-99m, I-131, …), half-life/λ/N0 flags
 ├─ config/
@@ -148,7 +161,7 @@ Optional (with background):
 ├─ data/
 │ └─ runs/
 │ └─ last → run_YYYYmmdd-HHMMSS/ # symlink to latest run
-├─ images/ # Exported figures (nt_curve.png, log_nt.png, bg.png)
+├─ assets/ # Exported figures (nt_curve.png, log_nt.png, bg.png)
 ├─ docs/ # (optional) extra figures (counts.png)
 ├─ README.md
 ├─ requirements.txt
