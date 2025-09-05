@@ -260,3 +260,23 @@ Runtime vs initial count (R=5, dt=0.05, T=5.0):
 </p>
 
 CSV: [assets/bench_runtime.csv](assets/bench_runtime.csv)
+
+## How to cite
+
+If you use this project, please cite:
+
+**Siddiqui, Yamna.** *Radioactive Decay Simulation*, v0.1.1, 2025.  
+DOI: 10.5281/zenodo.17063668
+
+BibTeX:
+```bibtex
+@software{Siddiqui_Radioactive_Decay_Simulation_2025,
+  author  = {Siddiqui, Yamna},
+  title   = {Radioactive Decay Simulation},
+  year    = {2025},
+  version = {0.1.1},
+  doi     = {10.5281/zenodo.17063668},
+  url     = {https://github.com/Yamnasid09/Radioactive-decay}
+}
+```
+
