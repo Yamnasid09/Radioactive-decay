@@ -1,8 +1,21 @@
-.venv/
+# Python
 __pycache__/
+*.pyc
+.venv/
+.venv*/
+.env
 .pytest_cache/
-data/
-*.png
-*.csv
-!docs/
-!docs/*.png
+
+# Project outputs
+data/runs/
+images/
+docs/*.png
+
+# Build / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
