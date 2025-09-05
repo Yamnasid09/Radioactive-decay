@@ -280,3 +280,13 @@ BibTeX:
 }
 ```
 
+
+## Design notes / trade-offs
+
+- **Why `binomial` is default:** vectorized RNG over realizations & time-bins, stable for large `N0`. Complexity ~ O(R * T/dt) without per-nucleus inner loops.
+- **`per_nucleus` (reference):** simplest/teaching baseline; loops over nuclei → slow for big `N0`. Useful for correctness checks.
+- **`numba` per-nucleus:** JIT removes Python overhead but has compile cost; worth it for moderate `N0` with many steps. For very large `N0`, vectorized binomial is usually faster.
+- **Background model:** Poisson counts per bin (`bg_rate`), added to signal; plots show clean vs background for intuition.
+- **Half-life fit:** linear fit on `ln N(t)` vs `t` (ignoring nonpositive bins); saves `images/log_fit.png` and `fit.json`.
+- **Reproducibility:** `numpy.random.default_rng(seed)`; outputs saved under `data/runs/<timestamp>/` with symlink `data/runs/last`.
+- **Units:** keep `--half-life-unit`, `dt`, `tmax` consistent (s/min/h/d/y).
