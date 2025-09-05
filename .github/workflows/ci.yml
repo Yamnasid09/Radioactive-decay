@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test-and-build-plots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          python -m pip install -U pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run unit tests
+        run: pytest -q
+
+      - name: Smoke simulation + plots
+        run: |
+          mkdir -p images data/runs
+          python -m src.cli simulate --mode mc --lambda 0.2 --n0 1000 --tmax 5 --dt 0.1 --seed 1 --plot || true
+          python -m src.cli analyze --run-dir data/runs/last --out images || true
+
+      - name: Upload images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: images
+          path: |
+            images/**
+            docs/**
