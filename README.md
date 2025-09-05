@@ -87,6 +87,18 @@ Estimate decay constant and half-life from the latest run and save a fitted log 
 
 ```bash
 python -m src.analyze --run-dir data/runs/last --out images
+## Sample Plots
+
+<p align="center">
+  <img src="images/nt_curve.png" alt="N(t) curve" width="45%"/>
+  <img src="images/log_nt.png" alt="log N(t) fit" width="45%"/>
+</p>
+
+Optional (with background):
+<p align="center">
+  <img src="images/nt_curve_bg.png" alt="N(t) with background" width="45%"/>
+  <img src="images/log_nt_bg.png" alt="log N(t) with background" width="45%"/>
+</p>
 
 
 ## 🚀 Features
