@@ -1,12 +1,14 @@
 ## Plots (preview)
 
-![N(t)](assets/nt_curve.png)
-![log N(t)](assets/log_nt.png)
-![N(t) + background](assets/nt_curve_bg.png)
-![log N(t) + background](assets/log_nt_bg.png)
+<p align="center">
+  <img src="assets/nt_curve.png" width="45%"/> <img src="assets/log_nt.png" width="45%"/>
+</p>
+<p align="center">
+  <img src="assets/nt_curve_bg.png" width="45%"/> <img src="assets/log_nt_bg.png" width="45%"/>
+</p>
 
 
-![CI](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/ci.yml/badge.svg?branch=main)
+
 
 
 
@@ -14,7 +16,6 @@
 
 # Radioactive Decay Simulation
 
-![CI Status](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/tests.yml/badge.svg)
 A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
 
 **Motivation:** I wanted a tiny simulator to verify the exponential decay law and practice basic software practices for the exam.
