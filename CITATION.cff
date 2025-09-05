@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Radioactive Decay Simulation"
-version: "0.1.0"
+version: "0.1.1"
 date-released: "2025-09-05"
 authors:
   - family-names: "Siddiqui"
@@ -15,6 +15,6 @@ preferred-citation:
   authors:
     - family-names: "Siddiqui"
       given-names: "Yamna"
-  version: "0.1.0"
+  version: "0.1.1"
   date-released: "2025-09-05"
   url: "https://github.com/Yamnasid09/Radioactive-decay"

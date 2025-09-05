@@ -19,3 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Half-life & λ estimation (`src.analyze`) + `images/log_fit.png`
 - Reproducible runs: `data/runs/<timestamp>/` + `data/runs/last` symlink
 - CI via GitHub Actions, tests (green badge), license (MIT)
+## [0.1.1] - 2025-09-05
+### Added
+- Zenodo DOI: 10.5281/zenodo.17063668

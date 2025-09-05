@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radioactive-decay-sim"
+version = "0.1.1"
+description = "Radioactive decay simulation with CLI (simulate/plot/analyze)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = ["numpy", "matplotlib", "pandas", "scipy", "PyYAML", "numba"]
+
+[project.scripts]
+raddecay = "src.cli:main"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.package-dir]
+src = "src"
