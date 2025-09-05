@@ -105,6 +105,30 @@ def main() -> None:
         if args.seed is not None:
             cmd += ["--seed", str(args.seed)]
         _run(cmd)
+        # ---- units & sanity hints ----
+        try:
+            import math, os, json, sys
+            # compute half-life from lambda we just resolved
+            T_half = math.log(2) / lam  # same unit assumed as args.half_life_unit
+            # warn if dt too large vs half-life
+            if args.dt > (T_half / 10.0):
+                print(f"[warn] dt={args.dt} is large vs T1/2≈{T_half:.3g} {args.half_life_unit}; consider dt <= T1/2/10.", file=sys.stderr)
+            # warn if tmax too short
+            if args.tmax < (2.0 * T_half):
+                print(f"[warn] tmax={args.tmax} may be short (< 2·T1/2≈{2*T_half:.3g} {args.half_life_unit}); decay may be truncated.", file=sys.stderr)
+            # record unit in latest run's meta.json
+            meta_path = os.path.join("data","runs","last","meta.json")
+            if os.path.exists(meta_path):
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                meta["unit"] = args.half_life_unit
+                with open(meta_path, "w", encoding="utf-8") as f:
+                    json.dump(meta, f, indent=2)
+                print(f"[info] Recorded unit={args.half_life_unit} in {meta_path}", file=sys.stderr)
+        except Exception as e:
+            import sys
+            print(f"[warn] unit/meta post-process failed: {e}", file=sys.stderr)
+
         if args.plot:
             _run([sys.executable, "-m", "src.plotting", "--run-dir", "data/runs/last", "--out", "images"])
         return
