@@ -36,11 +36,28 @@ python -m src.cli -h
 python -m src.cli simulate -h
 python -m src.cli plot -h
 
-**Common isotopes (half-life presets)**
-- `tc99m` = 6.01 h
-- `i131`  = 8.02 d
-- `cs137` = 30.05 y
-- `co60`  = 5.27 y
+### Common isotopes (presets)
+
+| Key   | Isotope | Half-life | Unit |
+|-------|---------|-----------|------|
+| tc99m | Tc-99m  | 6.01      | h    |
+| i131  | I-131   | 8.02      | d    |
+| cs137 | Cs-137  | 30.05     | y    |
+| co60  | Co-60   | 5.27      | y    |
+| f18   | F-18    | 109.77    | min  |
+| c11   | C-11    | 20.334    | min  |
+| n13   | N-13    | 9.965     | min  |
+| o15   | O-15    | 2.037     | min  |
+| i123  | I-123   | 13.22     | h    |
+| tl201 | Tl-201  | 73.1      | h    |
+| y90   | Y-90    | 64.1      | h    |
+| lu177 | Lu-177  | 6.65      | d    |
+| xe133 | Xe-133  | 5.25      | d    |
+| mo99  | Mo-99   | 66.0      | h    |
+| ba133 | Ba-133  | 10.52     | y    |
+
+> Use `--isotope <key>` with `--half-life-unit` to set your time unit (keep `dt`/`tmax` in the same unit).
+
 
 > Tip: choose time unit via `--half-life-unit {s|min|h|d|y}` and keep `dt`/`tmax` in the same unit.
 
@@ -56,6 +73,12 @@ python -m src.cli simulate --mode deterministic --isotope tc99m --half-life-unit
 # Monte-Carlo using I-131 (days)
 python -m src.cli simulate --mode mc --isotope i131 --half-life-unit d \
   --n0 50000 --tmax 40 --dt 0.1 --seed 7 --plot
+  
+# Monte-Carlo using F-18 (minutes)
+python -m src.cli simulate --mode mc --isotope f18 --half-life-unit min \
+  --n0 100000 --tmax 240 --dt 1 --seed 42 --plot
+python -m src.cli analyze --run-dir data/runs/last --out images
+
 
 ## Outputs
 
