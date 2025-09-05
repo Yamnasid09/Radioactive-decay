@@ -293,3 +293,13 @@ BibTeX:
 - **Half-life fit:** linear fit on `ln N(t)` vs `t` (ignoring nonpositive bins); saves `images/log_fit.png` and `fit.json`.
 - **Reproducibility:** `numpy.random.default_rng(seed)`; outputs saved under `data/runs/<timestamp>/` with symlink `data/runs/last`.
 - **Units:** keep `--half-life-unit`, `dt`, `tmax` consistent (s/min/h/d/y).
+
+## Parameter sweep (RMSE vs theory)
+
+F-18 (minutes): relative RMSE of Monte-Carlo mean vs theoretical curve over a grid of `N0` and `dt`.
+
+<p align="center">
+  <img src="assets/sweep_rmse_f18_min.png" width="60%"/>
+</p>
+
+CSV: [assets/sweep_rmse_f18_min.csv](assets/sweep_rmse_f18_min.csv)
