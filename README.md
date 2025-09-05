@@ -227,3 +227,13 @@ data/<run_id>/
 - ✅ CI proof: Actions “tests” badge is green
 - ✅ Limitations & future work: detector noise, dead-time, decay chains, Numba/JAX
 
+
+## Sample Plots (live links)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/nt_curve.png" width="45%"/>
+  <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/log_nt.png" width="45%"/>
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/nt_curve_bg.png" width="45%"/>
+  <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/log_nt_bg.png" width="45%"/>
+</p>
