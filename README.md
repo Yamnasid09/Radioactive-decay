@@ -1,3 +1,10 @@
+## Plots (preview)
+
+![N(t)](assets/nt_curve.png)
+![log N(t)](assets/log_nt.png)
+![N(t) + background](assets/nt_curve_bg.png)
+![log N(t) + background](assets/log_nt_bg.png)
+
 <!-- HERO PLOTS -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/nt_curve.png" width="45%"/>
