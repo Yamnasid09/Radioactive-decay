@@ -246,3 +246,15 @@ data/<run_id>/
   <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/nt_curve_bg.png" width="45%"/>
   <img src="https://raw.githubusercontent.com/Yamnasid09/Radioactive-decay/main/assets/log_nt_bg.png" width="45%"/>
 </p>
+
+**Docs website:** https://yamnasid09.github.io/Radioactive-decay/
+
+## Benchmarks
+
+Runtime vs initial count (R=5, dt=0.05, T=5.0):
+
+<p align="center">
+  <img src="assets/bench_runtime.png" width="60%"/>
+</p>
+
+CSV: [assets/bench_runtime.csv](assets/bench_runtime.csv)
