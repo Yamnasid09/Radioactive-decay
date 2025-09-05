@@ -56,11 +56,12 @@ def _run(cmd: list[str]) -> None:
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Run radioactive-decay simulations and plots")
+    p.add_argument("-V", "--version", action="version", version="radioactive-decay-sim 0.1.0")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     # simulate
     ps = sub.add_parser("simulate", help="Run a simulation")
-    ps.add_argument("--mode", choices=["deterministic", "mc", "gillespie", "chain"], default="mc")
+    ps.add_argument("--mode", choices=["deterministic", "mc"], default="mc")
     ps.add_argument("--isotope", choices=sorted(PRESETS.keys()))
     ps.add_argument("--half-life", type=float, dest="half_life")
     ps.add_argument("--half-life-unit", choices=list(UNIT_SEC.keys()), default="h")
@@ -75,6 +76,14 @@ def main() -> None:
     pp = sub.add_parser("plot", help="Plot a saved run")
     pp.add_argument("--run-dir", default="data/runs/last")
     pp.add_argument("--out", default="images")
+
+    # bg (add Poisson background and plot)
+    pb = sub.add_parser("bg", help="Add Poisson background to a saved run and plot")
+    pb.add_argument("--run-dir", default="data/runs/last")
+    pb.add_argument("--bg-rate", type=float, required=True)
+    pb.add_argument("--seed", type=int, default=0)
+    pb.add_argument("--out", default="images")
+
 
     # analyze
     pa = sub.add_parser("analyze", help="Estimate λ and half-life")
@@ -106,6 +115,12 @@ def main() -> None:
 
     if args.cmd == "analyze":
         _run([sys.executable, "-m", "src.analyze", "--run-dir", args.run_dir, "--out", args.out])
+        return
+        
+    if args.cmd == "bg":
+        _run([sys.executable, "src/plot_with_bg.py",
+              "--run-dir", args.run_dir, "--bg-rate", str(args.bg_rate),
+              "--seed", str(args.seed), "--out", args.out])
         return
 
 
