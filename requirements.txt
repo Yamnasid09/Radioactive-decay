@@ -4,5 +4,4 @@ matplotlib
 pandas
 PyYAML
 pytest
-
 numba
