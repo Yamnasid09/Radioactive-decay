@@ -316,3 +316,11 @@ Log counts:
 <p align="center">
   <img src="assets/chain_log.png" width="60%"/>
 </p>
+
+## Ensemble mean ± std (MC)
+
+The Monte-Carlo ensemble mean with a ±1σ band, computed from `traj.npy` of the latest run.
+
+<p align="center">
+  <img src="assets/nt_curve_band.png" width="60%"/>
+</p>
