@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/Yamnasid09/Radioactive-decay/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Yamnasid09/Radioactive-decay/actions) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17063668.svg)](https://doi.org/10.5281/zenodo.17063668) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Docs](https://img.shields.io/badge/docs-website-blue)](https://yamnasid09.github.io/Radioactive-decay/)
 
-
 ## Plots (preview)
 
 <p align="center">
@@ -11,13 +10,6 @@
 <p align="center">
   <img src="assets/nt_curve_bg.png" width="45%"/> <img src="assets/log_nt_bg.png" width="45%"/>
 </p>
-
-
-
-
-
-
-
 
 # Radioactive Decay Simulation
 
@@ -36,13 +28,11 @@
 > ```
 > **Outputs:** see `assets/` (README images) and `data/runs/last/` (NPY/CSV, `fit.json`).
 
-
 A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
 
 **Motivation:** I wanted a tiny simulator to verify the exponential decay law and practice basic software practices for the exam.
 
 **Scope:** This is a small teaching project, not a full package.
-
 
 ## 🔬 Physics Background
 For a species with decay constant λ and half-life:
@@ -101,7 +91,6 @@ python -m pip install -e .
 
 > Use `--isotope <key>` with `--half-life-unit` to set your time unit (keep `dt`/`tmax` in the same unit).
 
-
 > Tip: choose time unit via `--half-life-unit {s|min|h|d|y}` and keep `dt`/`tmax` in the same unit.
 
 **Examples**
@@ -122,7 +111,6 @@ python -m src.cli simulate --mode mc --isotope f18 --half-life-unit min \
   --n0 100000 --tmax 240 --dt 1 --seed 42 --plot
 python -m src.cli analyze --run-dir data/runs/last --out images
 
-
 ## Outputs
 
 - **Data (latest run):** saved under `data/runs/<timestamp>/` and symlinked at `data/runs/last`.  
@@ -135,7 +123,6 @@ python -m src.cli analyze --run-dir data/runs/last --out images
 **Regenerate plots from the latest run (into `assets/`):**
 ```bash
 python -m src.plotting --run-dir data/runs/last --out images
-
 
 ```bash
 python -m src.plotting --run-dir data/runs/last --out images
@@ -165,7 +152,6 @@ Optional (with background):
   <img src="assets/nt_curve_bg.png" alt="N(t) with background" width="45%"/>
   <img src="assets/log_nt_bg.png" alt="log N(t) with background" width="45%"/>
 </p>
-
 
 ## 🚀 Features
 - **Two engines**: analytical model and Monte Carlo
@@ -243,20 +229,6 @@ data/<run_id>/
 # - activity_mixture.png
 # - fit_Tc99m.txt (lambda_hat, T12_hat, R2)
 # - summary_fits.csv
-## 🎤 Viva Checklist
-
-- ✅ Repo overview: folder structure (`src/`, `config/`, `tests/`, `docs/`, `data/`)
-- ✅ Physics recap: $N(t)=N_0 e^{-\lambda t}$, $T_{1/2}=\ln 2/\lambda$
-- ✅ Install deps: `pip install -r requirements.txt`
-- ✅ Tests run: `pytest -q` (explain what tests check)
-- ✅ Simulation run: `python -m src.cli run --config config/default.yaml`
-- ✅ Show outputs: `counts_Tc99m.png`, `log_counts_Tc99m.png`, `fit_Tc99m.txt` (T12_hat ≈ 21636 s)
-- ✅ Config explain: `dt`, `T`, `n_realizations`, isotopes (Tc99m)
-- ✅ Code tour: `decay.py`, `simulate.py`, `analysis.py`, `plotting.py`, `cli.py`
-- ✅ Git usage: meaningful commits + tags (optional `v1.0.0`)
-- ✅ CI proof: Actions “tests” badge is green
-- ✅ Limitations & future work: detector noise, dead-time, decay chains, Numba/JAX
-
 
 ## Sample Plots (live links)
 <p align="center">
@@ -298,7 +270,6 @@ BibTeX:
   url     = {https://github.com/Yamnasid09/Radioactive-decay}
 }
 ```
-
 
 ## Design notes / trade-offs
 
