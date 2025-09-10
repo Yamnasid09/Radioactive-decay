@@ -21,6 +21,22 @@
 
 # Radioactive Decay Simulation
 
+> ### For Graders: Start Here
+> **Run (MC) + Plots**
+> ```
+> raddecay simulate --mode mc --lambda 0.2 --n0 2000 --tmax 5 --dt 0.1 --seed 1 --plot
+> ```
+> **Analyze half-life**
+> ```
+> raddecay analyze --run-dir data/runs/last --out images
+> ```
+> **Background (optional)**
+> ```
+> raddecay bg --run-dir data/runs/last --bg-rate 0.5 --seed 7 --out images
+> ```
+> **Outputs:** see `assets/` (README images) and `data/runs/last/` (NPY/CSV, `fit.json`).
+
+
 A clean, well-tested toolkit to simulate radioactive decay and reproduce the exponential law.
 
 **Motivation:** I wanted a tiny simulator to verify the exponential decay law and practice basic software practices for the exam.
