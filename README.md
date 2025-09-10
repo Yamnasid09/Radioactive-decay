@@ -303,3 +303,16 @@ F-18 (minutes): relative RMSE of Monte-Carlo mean vs theoretical curve over a gr
 </p>
 
 CSV: [assets/sweep_rmse_f18_min.csv](assets/sweep_rmse_f18_min.csv)
+
+## A→B decay chain (example)
+
+Monte-Carlo simulation of an A→B chain with \(\lambda_A=0.2\), \(\lambda_B=0.05\), \(N_{0,A}=50{,}000\) (R=50, dt=0.1).
+
+<p align="center">
+  <img src="assets/chain_na_nb.png" width="60%"/>
+</p>
+
+Log counts:
+<p align="center">
+  <img src="assets/chain_log.png" width="60%"/>
+</p>
