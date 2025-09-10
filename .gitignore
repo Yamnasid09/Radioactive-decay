@@ -19,3 +19,7 @@ build/
 # IDE
 .vscode/
 .idea/
+
+# Coverage artifacts
+.coverage
+htmlcov/

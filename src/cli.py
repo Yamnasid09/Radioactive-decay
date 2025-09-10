@@ -1,31 +1,29 @@
-# src/cli.py — clean indentation + analyze support
+# src/cli.py — clean CLI with simulate/plot/analyze/bg/chain
 
 import argparse
 import math
 import subprocess
 import sys
+import os
+import json
 
 PRESETS = {
-    # existing
     "tc99m": ("h", 6.01),
     "i131":  ("d", 8.02),
     "cs137": ("y", 30.05),
     "co60":  ("y", 5.27),
-
-    # new nuclear medicine favorites
-    "f18":   ("min", 109.77),  # 1.8295 h
+    "f18":   ("min", 109.77),
     "c11":   ("min", 20.334),
     "n13":   ("min", 9.965),
     "o15":   ("min", 2.037),
     "i123":  ("h", 13.22),
     "tl201": ("h", 73.1),
-    "y90":   ("h", 64.1),      # ~2.67 d
+    "y90":   ("h", 64.1),
     "lu177": ("d", 6.65),
     "xe133": ("d", 5.25),
-    "mo99":  ("h", 66.0),      # ~2.75 d
+    "mo99":  ("h", 66.0),
     "ba133": ("y", 10.52),
 }
-
 
 UNIT_SEC = {"s": 1, "min": 60, "h": 3600, "d": 86400, "y": 365.25 * 86400}
 
@@ -42,7 +40,7 @@ def _resolve_lambda(args) -> float:
         return float(args.lambda_)
     if args.half_life is not None:
         return _lambda_in_unit_from_half_life(args.half_life, args.half_life_unit, args.half_life_unit)
-    if args.isotope:
+    if getattr(args, "isotope", None):
         preset_unit, preset_hl = PRESETS[args.isotope]
         out_unit = args.half_life_unit or preset_unit
         return _lambda_in_unit_from_half_life(preset_hl, preset_unit, out_unit)
@@ -56,11 +54,11 @@ def _run(cmd: list[str]) -> None:
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Run radioactive-decay simulations and plots")
-    p.add_argument("-V", "--version", action="version", version="radioactive-decay-sim 0.1.0")
+    p.add_argument("-V", "--version", action="version", version="radioactive-decay-sim 0.1.1")
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    # simulate
-    ps = sub.add_parser("simulate", help="Run a simulation")
+    # simulate (single-isotope)
+    ps = sub.add_parser("simulate", help="Run a single-isotope simulation")
     ps.add_argument("--mode", choices=["deterministic", "mc"], default="mc")
     ps.add_argument("--isotope", choices=sorted(PRESETS.keys()))
     ps.add_argument("--half-life", type=float, dest="half_life")
@@ -77,18 +75,29 @@ def main() -> None:
     pp.add_argument("--run-dir", default="data/runs/last")
     pp.add_argument("--out", default="images")
 
-    # bg (add Poisson background and plot)
+    # analyze
+    pa = sub.add_parser("analyze", help="Estimate λ and half-life from a saved run")
+    pa.add_argument("--run-dir", default="data/runs/last")
+    pa.add_argument("--out", default="images")
+
+    # bg (background)
     pb = sub.add_parser("bg", help="Add Poisson background to a saved run and plot")
     pb.add_argument("--run-dir", default="data/runs/last")
     pb.add_argument("--bg-rate", type=float, required=True)
     pb.add_argument("--seed", type=int, default=0)
     pb.add_argument("--out", default="images")
 
-
-    # analyze
-    pa = sub.add_parser("analyze", help="Estimate λ and half-life")
-    pa.add_argument("--run-dir", default="data/runs/last")
-    pa.add_argument("--out", default="images")
+    # chain (A → B)
+    pc = sub.add_parser("chain", help="Simulate A→B decay chain")
+    pc.add_argument("--mode", choices=["deterministic", "mc"], default="mc")
+    pc.add_argument("--n0a", type=int, required=True, help="Initial nuclei of A")
+    pc.add_argument("--lambda-a", type=float, required=True)
+    pc.add_argument("--lambda-b", type=float, required=True)
+    pc.add_argument("--tmax", type=float, default=10.0)
+    pc.add_argument("--dt", type=float, default=0.05)
+    pc.add_argument("--realizations", type=int, default=30, help="MC only")
+    pc.add_argument("--seed", type=int, default=123, help="MC only")
+    pc.add_argument("--out", default="images")
 
     args = p.parse_args()
 
@@ -105,15 +114,13 @@ def main() -> None:
         if args.seed is not None:
             cmd += ["--seed", str(args.seed)]
         _run(cmd)
-        # ---- units & sanity hints ----
+
+        # units & sanity hints
         try:
-            import math, os, json, sys
             # compute half-life from lambda we just resolved
-            T_half = math.log(2) / lam  # same unit assumed as args.half_life_unit
-            # warn if dt too large vs half-life
+            T_half = math.log(2) / lam  # unit: args.half_life_unit
             if args.dt > (T_half / 10.0):
                 print(f"[warn] dt={args.dt} is large vs T1/2≈{T_half:.3g} {args.half_life_unit}; consider dt <= T1/2/10.", file=sys.stderr)
-            # warn if tmax too short
             if args.tmax < (2.0 * T_half):
                 print(f"[warn] tmax={args.tmax} may be short (< 2·T1/2≈{2*T_half:.3g} {args.half_life_unit}); decay may be truncated.", file=sys.stderr)
             # record unit in latest run's meta.json
@@ -126,7 +133,6 @@ def main() -> None:
                     json.dump(meta, f, indent=2)
                 print(f"[info] Recorded unit={args.half_life_unit} in {meta_path}", file=sys.stderr)
         except Exception as e:
-            import sys
             print(f"[warn] unit/meta post-process failed: {e}", file=sys.stderr)
 
         if args.plot:
@@ -140,11 +146,24 @@ def main() -> None:
     if args.cmd == "analyze":
         _run([sys.executable, "-m", "src.analyze", "--run-dir", args.run_dir, "--out", args.out])
         return
-        
+
     if args.cmd == "bg":
         _run([sys.executable, "src/plot_with_bg.py",
               "--run-dir", args.run_dir, "--bg-rate", str(args.bg_rate),
               "--seed", str(args.seed), "--out", args.out])
+        return
+
+    if args.cmd == "chain":
+        _run([sys.executable, "-m", "src.chain",
+              "--mode", args.mode,
+              "--n0a", str(args.n0a),
+              "--lambda-a", str(args.lambda_a),
+              "--lambda-b", str(args.lambda_b),
+              "--tmax", str(args.tmax),
+              "--dt", str(args.dt),
+              "--realizations", str(args.realizations),
+              "--seed", str(args.seed),
+              "--out", args.out])
         return
 
 
