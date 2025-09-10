@@ -39,5 +39,4 @@ add background counts, and estimate λ & half-life from data.
 ## Navigation
 - [Quickstart](./quickstart.md)
 - [CLI Reference](./cli.md)
-- [A→B Chain](./chain.md)
 - [Benchmarks](./benchmarks.md)
