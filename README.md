@@ -152,7 +152,7 @@ Optional (with background):
   <img src="assets/log_nt_bg.png" alt="log N(t) with background" width="45%"/>
 </p>
 
-## 🚀 Features
+## Features
 - **Two engines**: analytical model and Monte Carlo
 - **Multi-isotope support** (mixtures, independent chains)
 - **Config-driven runs** via YAML
@@ -181,7 +181,7 @@ Optional (with background):
 ├─ README.md
 ├─ requirements.txt
 └─ tests/ # (optional) unit tests
-## ⚡ Optimization
+## Optimization
 
 - The default engine is binomial, which is the fastest (vectorized RNG).
 
@@ -200,7 +200,7 @@ monte_carlo:
 dt: 60
 T: 3600
 
-## ⚙️ Installation
+## Installation
 Clone the repository and install dependencies:
 
 ```bash
@@ -210,7 +210,7 @@ pip install -r requirements.txt
 ![Counts vs time — Tc99m](docs/counts_Tc99m.png)
 ![Log counts — Tc99m](docs/log_counts_Tc99m.png)
 
-## 🔁 Reproducibility
+## Reproducibility
 
 ```bash
 # env install
